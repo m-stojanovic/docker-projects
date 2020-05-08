@@ -10,3 +10,5 @@ services:
       - '8080:80'
   web:
     image: httpd
+    volumes:
+      - ./html:/usr/local/apache2/htdocs/
