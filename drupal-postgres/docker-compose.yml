@@ -1,0 +1,26 @@
+version: '3'
+services:
+  drupal:
+    image: drupal
+    ports: 
+      - '8080:80'
+    volumes:
+      - ./data_drupal/modules:/var/www/html/modules:rw 
+      - ./data_drupal/profiles:/var/www/html/profiles:rw
+      - ./data_drupal/sites:/var/www/html/sites:rw
+      - ./data_drupal/themes:/var/www/html/themes:rw
+  postgres:
+    restart: always
+    image: postgres
+    environment:
+      POSTGRES_USER: 'admin'
+      POSTGRES_PASSWORD: 'admin'
+      POSTGRES_DB: 'drupal'
+    volumes:
+      - ./data_postgres:/var/lib/postgresql/data
+    
+volumes:
+  drupal-modules:
+  drupal-profiles:
+  drupal-sites:
+  drupal-themes:
