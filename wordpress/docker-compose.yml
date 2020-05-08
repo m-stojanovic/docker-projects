@@ -19,7 +19,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: admin
       MYSQL_DATABASE: wordpress
-      MYSQL_USER: wordpress
+      MYSQL_USER: admin
       MYSQL_PASSWORD: admin
     volumes:
       - mysql-data:/var/lib/mysql
