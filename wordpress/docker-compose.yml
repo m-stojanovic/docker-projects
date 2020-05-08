@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+
+  wordpress:
+    image: wordpress
+    ports:
+      - 8080:80
+    environment:
+      WORDPRESS_DB_HOST: mysql
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DB_USER: admin
+      WORDPRESS_DB_PASSWORD: admin
+    volumes:
+      - ./wordpress-data:/var/www/html
+
+  mysql:
+    image: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: admin
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+volumes:
+  mysql-data:
+  wordpress-data:
