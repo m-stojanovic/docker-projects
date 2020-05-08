@@ -1,14 +1,18 @@
+# Building custom image drupal-bootstrap from Dockerfile in order to activate bootstrap template downloaded in Dockerfile
 version: '3'
 services:
   drupal:
-    image: drupal
-    ports: 
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: drupal-bootstrap
+    ports:
       - '8080:80'
     volumes:
-      - ./data_drupal/modules:/var/www/html/modules:rw 
-      - ./data_drupal/profiles:/var/www/html/profiles:rw
-      - ./data_drupal/sites:/var/www/html/sites:rw
-      - ./data_drupal/themes:/var/www/html/themes:rw
+      - ./data_drupal/modules:/var/www/html/modules
+      - ./data_drupal/profiles:/var/www/html/profiles
+      - ./data_drupal/sites:/var/www/html/sites
+      - ./data_drupal/themes:/var/www/html/themes
   postgres:
     restart: always
     image: postgres
@@ -17,10 +21,11 @@ services:
       POSTGRES_PASSWORD: 'admin'
       POSTGRES_DB: 'drupal'
     volumes:
-      - ./data_postgres:/var/lib/postgresql/data
-    
+      - ./data_db:/var/lib/postgresql/data
+
 volumes:
-  drupal-modules:
-  drupal-profiles:
-  drupal-sites:
-  drupal-themes:
+  drupal_modules:
+  drupal_profiles:
+  drupal_sites:
+  drupal_themes:
+  data_db:
