@@ -46,7 +46,7 @@ services:
             - frontend
             - backend
        deploy:
-         node: global
+         mode: global
          placement:
            constraints:
              - node.role == worker
