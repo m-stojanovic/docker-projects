@@ -9,10 +9,10 @@ services:
     ports:
       - '8080:80'
     volumes:
-      - ./data_drupal/modules:/var/www/html/modules
-      - ./data_drupal/profiles:/var/www/html/profiles
-      - ./data_drupal/sites:/var/www/html/sites
-      - ./data_drupal/themes:/var/www/html/themes
+      - ./drupal_modules:/var/www/html/modules
+      - ./drupal_profiles:/var/www/html/profiles
+      - ./drupal_sites:/var/www/html/sites
+      - ./drupal_themes:/var/www/html/themes
   postgres:
     restart: always
     image: postgres
