@@ -4,3 +4,9 @@ DB_PORT=3306
 DB_DATABASE=laravel
 DB_USERNAME=laravel
 DB_PASSWORD=password
+# Need create manually user for MySQL
+# docker exec -it db /bin/bash
+# mysql -u root -p
+# GRANT ALL ON laravel.* TO 'laravel'@'%' IDENTIFIED BY 'password';
+# FLUSH PRIVILEGES;
+# EXIT;
