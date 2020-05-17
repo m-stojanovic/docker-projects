@@ -1,14 +1,6 @@
 version: '3.8'
 services:
-  nginx:
-    image: nginx:latest
-    container_name: webserver
-    restart: unless-stopped
-    ports: 
-      - '80:80'
-    networks:
-      - lnm
-  
+
   laravel:
     build: 
       context: .
@@ -20,6 +12,21 @@ services:
     environment:
       SERVICE_NAME: app
       SERVICE_TAGS: dev
+    volumes:
+      - ./:/var/www
+      - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    networks:
+      - lnm
+      
+  nginx:
+    image: nginx:latest
+    container_name: webserver
+    restart: unless-stopped
+    ports: 
+      - '80:80'
+    volumes:
+      - ./:/var/www
+      - ./nginx/conf.d/:/etc/nginx/conf.d
     networks:
       - lnm
       
@@ -34,9 +41,16 @@ services:
       MYSQL_ROOT_PASSWORD: password
       SERVICE_NAME: app
       SERVICE_TAGS: dev
+    volumes:
+      - dbdata:/var/lib/mysql
+      - ./mysql/my.cnf:/etc/mysql/my.cnf
     networks:
       - lnm
       
  networks:
    lnm:
-     driver: bridge    
+     driver: bridge  
+ # To be able to use this volume across services
+ volumes:
+   dbdata:
+     driver: local
