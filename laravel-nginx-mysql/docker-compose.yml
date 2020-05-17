@@ -1,1 +1,42 @@
 version: '3.8'
+services:
+  nginx:
+    image: nginx:latest
+    container_name: webserver
+    restart: unless-stopped
+    ports: 
+      - '80:80'
+    networks:
+      - lnm
+  
+  laravel:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    image: php:latest
+    container_name: app
+    restart: unless-stopped
+    working_dir: /var/www
+    environment:
+      SERVICE_NAME: app
+      SERVICE_TAGS: dev
+    networks:
+      - lnm
+      
+  mysql:
+    image: mysql:latest
+    container_name: db
+    restart: unless-stopped
+    ports:
+      - '3306:3306'
+    environment:
+      MYSQL_DATABASE: laravel
+      MYSQL_ROOT_PASSWORD: password
+      SERVICE_NAME: app
+      SERVICE_TAGS: dev
+    networks:
+      - lnm
+      
+ networks:
+   lnm:
+     driver: bridge    
