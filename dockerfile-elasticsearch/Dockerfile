@@ -1,4 +1,4 @@
-FROM elasticsearch:7.7
+FROM ubuntu:latest
 
 LABEL ES 7.7.0
 
