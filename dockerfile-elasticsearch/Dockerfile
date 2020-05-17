@@ -1,15 +1,15 @@
 FROM ubuntu:latest
 
-LABEL ES 7.7.0
+LABEL ES 7.2.0
 
-ENV ES_VERSION 7.7.0
+ENV ES_VERSION 7.2.0
 
 # Download each plugin and put it into files/ and change the filename here accordingly to downloaded plugin name
-ENV ROR_PLUGIN readonlyrest-1.19.5_es7.7.0.zip
+ENV ROR_PLUGIN readonlyrest-1.19.5_es7.2.0.zip
 
 ENV ODA_PLUGIN opendistro_alerting-1.7.0.0.zip
 
-ENV SQL_PLUGIN elasticsearch-sql-7.7.0.0.zip
+ENV SQL_PLUGIN elasticsearch-sql-7.2.0.0.zip
 
 
 # Get unused UID/GID to avoid possible user/group mess
