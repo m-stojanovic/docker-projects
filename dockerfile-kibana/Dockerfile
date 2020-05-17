@@ -28,15 +28,15 @@ RUN \
     echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | tee -a /etc/apt/sources.list.d/elastic-7.x.list && \
     apt-get update
 
-# Add user:group with preset uid:gid
+# Add user:group (kibana:kibana) with preset uid:gid ($KIBANA_UID:$KIBANA_GID)
 RUN \
-  --addgroup --quiet \
-             --gid ${KIBANA_GID} \ 
-             kibana && \
-  --useradd  --uid ${KIBANA_UID} \
-             --gid kibana \
-             --shell /bin/false \
-             kibana 
+  addgroup --quiet \
+           --gid ${KIBANA_GID} \ 
+           kibana && \
+  useradd  --uid ${KIBANA_UID} \
+           --gid kibana \
+           --shell /bin/false \
+           kibana 
  
  # Install kibana
  RUN \
