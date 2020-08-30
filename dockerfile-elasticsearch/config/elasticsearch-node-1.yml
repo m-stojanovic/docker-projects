@@ -20,7 +20,8 @@ cluster.name: elk_c1
 #
 # Use a descriptive name for the node:
 #
-node.name: master-1
+node.name: node-1
+
 #
 # Add custom attributes to the node:
 #
@@ -31,11 +32,15 @@ node.attr.zone: 1
 #
 # Path to directory where to store the data (separate multiple locations by comma):
 #
-path.data: /DATA1/es/data
+path.data: /DATA1/elasticsearch
 #
 # Path to log files:
 #
-path.logs: /DATA1/es/logs
+path.logs: /DATA1/elasticsearch/logs
+#
+# Path to save snapshots
+#
+path.repo: /DATA1/elasticsearch/snapshots
 #
 # ----------------------------------- Memory -----------------------------------
 #
@@ -66,7 +71,7 @@ network.host: [_local_, _site_]
 # Pass an initial list of hosts to perform discovery when this node is started:
 # The default list of hosts is ["127.0.0.1", "[::1]"]
 #
-discovery.seed_hosts: ["127.0.0.1"]
+discovery.seed_hosts: ["172.28.0.3"]
 #
 # Bootstrap the cluster using an initial set of master-eligible nodes:
 #
@@ -87,4 +92,7 @@ cluster.initial_master_nodes: ["master-1"]
 # Require explicit names when deleting indices:
 #
 #action.destructive_requires_name: true
-
+node.master: false
+node.data: true
+node.ingest: false
+node.ml: false
