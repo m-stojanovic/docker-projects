@@ -1,0 +1,148 @@
+version: '2.2'
+services:
+  master-es-c2:
+    build: elasticsearch/
+    container_name: master-es-c2
+    hostname: master-es-c2
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    volumes:
+      - /DATA1/elasticsearch/master-es-c2:/DATA1/elasticsearch/master-es-c2
+      - ./elasticsearch/elasticsearch-master.yml:/etc/elasticsearch/elasticsearch.yml
+      - ./elasticsearch/jvm.options-master:/etc/elasticsearch/jvm.options
+      - config-es-master:/etc/elasticsearch
+    ports:
+      - 9200:9200
+    networks:
+      elk:
+        ipv4_address: 172.30.0.2
+
+  node-1-es-c2:
+    build: elasticsearch/
+    container_name: node-1-es-c2
+    hostname: node-1-es-c2
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    volumes:
+      - /DATA1/elasticsearch/node-1-es-c2:/DATA1/elasticsearch/node-1-es-c2
+      - ./elasticsearch/elasticsearch-node-1.yml:/etc/elasticsearch/elasticsearch.yml
+      - ./elasticsearch/jvm.options-node:/etc/elasticsearch/jvm.options
+      - config-es-node-1:/etc/elasticsearch
+    networks:
+      elk:
+        ipv4_address: 172.30.0.3
+
+  node-2-es-c2:
+    build: elasticsearch/
+    container_name: node-2-es-c2
+    hostname: node-2-es-c2
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    volumes:
+      - /DATA2/elasticsearch/node-2-es-c2:/DATA2/elasticsearch/node-2-es-c2
+      - ./elasticsearch/elasticsearch-node-2.yml:/etc/elasticsearch/elasticsearch.yml
+      - ./elasticsearch/jvm.options-node:/etc/elasticsearch/jvm.options
+      - config-es-node-2:/etc/elasticsearch
+    networks:
+      elk:
+        ipv4_address: 172.30.0.4
+
+  kibana-es-c2:
+    build: kibana/
+    container_name: kibana-c2
+    hostname: kibana-c2
+    volumes:
+      - ./kibana/kibana.yml:/etc/kibana/kibana.yml
+      - config-kibana:/etc/kibana
+    ports:
+      - "5601:5601"
+    networks:
+      elk:
+        ipv4_address: 172.30.0.5
+    depends_on: 
+      - master-es-c2
+
+  logstash-es-c2:
+    build: logstash/
+    container_name: logstash-c2
+    hostname: logstash-c2
+    volumes:
+      - ./logstash/logstash.yml:/etc/logstash/logstash.yml
+      - ./logstash/pipelines.yml:/etc/logstash/pipeline.yml
+      - ./logstash/pipeline:/etc/logstash/conf.d
+      - ./logstash/jvm.options:/etc/logstash/jvm.options
+      - /DATA2/logstash:/DATA2/logstash
+      - config-logstash:/etc/logstash
+    ports:
+      - "5001:5001"
+      - "9600:9600"
+    networks:
+      elk:
+        ipv4_address: 172.30.0.6
+    depends_on:
+      - master-es-c2
+
+  cerebro-es-c2:
+    build: cerebro/
+    container_name: cerebro-c2
+    hostname: cerebro-c2
+    environment:
+      CEREBRO_PORT: 9090
+    volumes:
+      - config-cerebro:/opt/cerebro/conf
+      - ./cerebro/application.conf/:/opt/cerebro/conf/application.conf
+    ports: 
+      - "9090:9090"
+    networks:
+      elk:
+        ipv4_address: 172.30.0.7
+    depends_on: 
+      - master-es-c2
+
+  curator-es-c2:
+    build: curator/
+    container_name: curator-c2
+    volumes:
+      - ./curator/config:/config
+    networks:
+      elk:
+        ipv4_address: 172.30.0.8
+    depends_on: 
+      - master-es-c2
+
+volumes:
+  config-es-master:
+    driver: local
+  config-es-node-1:
+    driver: local
+  config-es-node-2:
+    driver: local
+  config-kibana:
+    driver: local
+  config-logstash:
+    driver: local
+  config-cerebro:
+    driver: local
+
+networks:
+  elk:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.30.0.0/16
+          gateway: 172.30.0.1
