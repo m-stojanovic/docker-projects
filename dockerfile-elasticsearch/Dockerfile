@@ -35,25 +35,28 @@ RUN \
 RUN apt-get update && apt-get install -y elasticsearch=${ES_VERSION}
 
 # Cleanup
-
 RUN apt-get clean all && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# Prepare data directories for elasticsearch
-RUN sudo mkdir -p /DATA1 /DATA2 /DATA3 
-RUN sudo chown elasticsearch:elasticsearch /DATA1; \
-    sudo chown elasticsearch:elasticsearch /DATA2; \
-    sudo chown elasticsearch:elasticsearch /DATA3; 
+# Prepare SSL Certificates
+COPY ./ssl /etc/elasticsearch/ssl
+
+# Prepare directory structure
+RUN sudo mkdir -p /DATA0 /DATA1 /DATA2 
+
 RUN sudo mkdir -p /etc/elasticsearch/scripts && \
+    sudo mkdir -p /DATA0/elasticsearch /DATA0/elasticsearch/logs && \
     sudo mkdir -p /DATA1/elasticsearch /DATA1/elasticsearch/logs && \
     sudo mkdir -p /DATA2/elasticsearch /DATA2/elasticsearch/logs && \
-    sudo mkdir -p /DATA3/elasticsearch /DATA3/elasticsearch/logs && \
+    sudo mkdir -p /DATA0/elasticsearch/snapshots && \
     sudo mkdir -p /DATA1/elasticsearch/snapshots && \
-    sudo mkdir -p /DATA2/elasticsearch/snapshots && \
-    sudo mkdir -p /DATA3/elasticsearch/snapshots
+    sudo mkdir -p /DATA2/elasticsearch/snapshots 
 
 # Bootstrap
-ADD config/bootstrap.sh /etc/bootstrap.sh
-RUN chown root:root /etc/bootstrap.sh && chmod 700 /etc/bootstrap.sh
+ADD bootstrap.sh /etc/bootstrap.sh
+
+# Permissions
+RUN chown root:root /etc/bootstrap.sh && chmod 700 /etc/bootstrap.sh && \
+    chown -R elasticsearch:elasticsearch /etc/elasticsearch/ssl
 
 CMD ["/etc/bootstrap.sh", "-d"]
 
