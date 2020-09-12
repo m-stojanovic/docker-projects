@@ -41,16 +41,18 @@ RUN awk 'NR==1{print; print "NODE_OPTIONS=\"--max-old-space-size=2560\""} NR!=1'
     mv /usr/share/kibana/bin/kibana.tmp /usr/share/kibana/bin/kibana && \
     chmod a+x /usr/share/kibana/bin/kibana
 
-# Give ownership to kibana user
-RUN chown -R kibana:kibana /etc/kibana
-
 # Cleanup
 RUN apt-get clean all && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
- 
-# Bootstrap
 
+# Prepare SSL Certificates
+COPY ./ssl /etc/kibana/ssl
+
+# Bootstrap
 ADD bootstrap.sh /etc/bootstrap.sh
-RUN chown root:root /etc/bootstrap.sh && chmod 700 /etc/bootstrap.sh
+
+# Permissions
+RUN chown root:root /etc/bootstrap.sh && chmod 700 /etc/bootstrap.sh && \
+    chown -R kibana:kibana /etc/kibana/ssl
 
 CMD ["/etc/bootstrap.sh", "-d"]
 
