@@ -1,11 +1,7 @@
 FROM ubuntu:latest
 
-LABEL logstash 7.2.0
-
 # Logstash version to install
-ENV LS_VERSION 7.2.0
-
-ENV LS_HOME /var/lib/logstash
+ENV LS_VERSION 7.9.0
 
 # Get unused UID/GID to avoid possible user/group mess
 ENV LS_UID 1099
@@ -21,63 +17,34 @@ RUN \
 
 # Install prerequisites
 RUN \
-    apt-get update && apt-get upgrade -y && apt-get install -y sudo wget apt-transport-https curl gnupg logrotate rsyslog vim && \
-    echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | debconf-set-selections && \
+    apt-get update && apt-get upgrade -y && apt-get install -y sudo wget apt-transport-https curl gnupg logrotate rsyslog vim less net-tools openjdk-11-jdk && \
     wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add - && \
     echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-7.x.list && \
-    apt-get update && apt-get install -y --allow-unauthenticated oracle-java8-installer oracle-java8-set-default
-    
-# Add user:group (logstash:logstash) with preset uid:gid ($LS_UID:$LS_GID)
-RUN \
-  addgroup --quiet \
-           --git &{LS_GID} \
-           logstash && \
-  useradd  --uid ${LS_UID} \
-           --git logstash \
-           --shell /bin/false \
-           logstash
- 
-# Install logstash
-RUN wget https://artifacts.elastic.co/downloads/logstash/logstash-${LS_VERSION}.deb && dpkg -i logstash-${LS_VERSION}.deb && rm logstash-${LS_VERSION}.deb
-RUN /usr/share/logstash/bin/system-install /etc/logstash/startup.options sysv
-
-# Have logstash stdout/stderr logs in /var/log/logstash
-RUN sed -i 's#/var/log/#/var/log/logstash/#g' /etc/init.d/logstash
+    apt-get update && apt-get install -y logstash 
 
 # Install plugins
-COPY files/logstash-filter-math-1.0.gem $LS_HOME/
-COPY files/logrotate_logstash /etc/logrotate.d/logstash
-RUN /usr/share/logstash/bin/logstash-plugin install $LS_HOME/logstash-filter-math-1.0.gem && \
+COPY plugins/logstash-filter-math-1.1.1.gem /etc/logstash/plugins/
+RUN /usr/share/logstash/bin/logstash-plugin install /etc/logstash/plugins/logstash-filter-math-1.1.1.gem && \
     /usr/share/logstash/bin/logstash-plugin install logstash-filter-translate && \
     /usr/share/logstash/bin/logstash-plugin install logstash-input-lumberjack
     
 # Cleanup
 RUN apt-get clean all && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# Bootstrap
-ADD files/bootstrap.sh /etc/bootstrap.sh
-RUN chown root:root /etc/bootstrap.sh
-RUN chmod 700 /etc/bootstrap.sh
+# Prepare SSL Certificates
+COPY ./ssl /etc/logstash/ssl
 
-CMD["/etc/bootstrap.sh", "-d"]
+# Bootstrap
+ADD bootstrap.sh /etc/bootstrap.sh
+
+# Permissions
+RUN chown root:root /etc/bootstrap.sh && \
+    chown logstash:logstash /etc/logstash/ssl && \
+    chmod 700 /etc/bootstrap.sh
+
+CMD ["/etc/bootstrap.sh", "-d"]
 
 EXPOSE 5043
 EXPOSE 5044
 EXPOSE 5045
 EXPOSE 5046
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
