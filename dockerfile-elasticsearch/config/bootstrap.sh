@@ -1,3 +1,4 @@
+ 
 #!/bin/bash
 chown -R elasticsearch:elasticsearch /var/log/elasticsearch & 
 chown -R elasticsearch:elasticsearch /usr/share/elasticsearch & 
