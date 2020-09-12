@@ -18,7 +18,7 @@ RUN \
 #RUN \
 #  cd /opt/kafka-manager && sbt clean dist
 
-ADD files/bootstrap.sh /etc/bootstrap.sh
+ADD bootstrap.sh /etc/bootstrap.sh
 RUN chown root:root /etc/bootstrap.sh && chmod 700 /etc/bootstrap.sh
 
 CMD ["etc/bootstrap", "-d"]
