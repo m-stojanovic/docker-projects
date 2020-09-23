@@ -1,0 +1,16 @@
+version: '3.0'
+services:
+  nginx:
+    build: .
+    container_name: nginx_dashboard 
+    hostname: nginx_dashboard
+    expose:
+      - 80
+    environment:
+      VIRTUAL_HOST: "devopslearning.xyz"
+
+networks:
+  default:
+    external:
+      name: nginx-proxy
+
