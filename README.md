@@ -10,8 +10,6 @@
   * [Installation](#installation)
 * [Contact](#contact)
 
-
-
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
