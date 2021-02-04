@@ -254,7 +254,7 @@ path.logs: /DATA2/logstash/logs
 # http://www.elastic.co/guide/en/logstash/current/monitoring-logstash.html
 #xpack.monitoring.enabled: true
 #xpack.monitoring.elasticsearch.username: logstash_system
-#xpack.monitoring.elasticsearch.password: CarnegieBg!
+#xpack.monitoring.elasticsearch.password: DevopsPass!
 #xpack.monitoring.elasticsearch.hosts: ["http://172.30.0.2:9200"]
 #xpack.monitoring.elasticsearch.ssl.certificate_authority: /etc/logstash/config/ca.pem
 # an alternative to hosts + username/password settings is to use cloud_id/cloud_auth

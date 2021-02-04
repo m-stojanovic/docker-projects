@@ -1,7 +1,7 @@
 # Dockerfile to build grafana
 # Based on Ubuntu 
 # Milos Stojanovic 
-# email: mistojanovic@carnegietechnologies.com
+# email: mistojanovic@devopslearning.com
 ############################################################
 
 FROM ubuntu:20.04
